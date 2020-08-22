@@ -84,86 +84,7 @@ trait ImportOperation
         });
     }
 
-    /**
-     *
-     * Override this method to provide an array of validation rules. The syntax to follow is the same as the syntax we
-     * use for defining Laravel validation rules.
-     * return [
-     *      'user_id' => 'required',
-     *      'package_id' => 'required',
-     *      'company_id' => 'required',
-     * ];
-     *
-     * Required To Override
-     *
-     * @return array
-     *
-     */
-    protected function importValidationRules()
-    {
-        return [];
-    }
-
-    /**
-     * Override this method to provide an array of validation rule failure messages. A sample return could be
-     *
-     * return [
-     *      'user_id.required' => 'Specifying a user is mandatory when creating an appointment, please check if you have specified a valid name, email, date of birth (yyyy-mm-dd format) & contact number of the user.',
-     *      'package_id.required' => 'Specifying a package name is mandatory when creating an appointment, please check if you have specified a valid package name.',
-     *      'company_id.required' => 'Specifying a company name is mandatory when creating an appointment, please check if you have specified a valid company name.',
-     * ];
-     *
-     * Required To Override
-     *
-     * @return array
-     */
-    protected function importValidationMessages()
-    {
-        return [];
-    }
-
-    /**
-     *
-     * After all foreign keys have been resolved and validation rules have run successfully for all rows, this method
-     * is called with an array representing the entity which is to be created.
-     *
-     * Required To Override
-     *
-     * @param array $entity
-     * @return mixed You need to return the created entity object, generally you can return the result of calling the create method on the entity class.
-     */
-    protected function importCreate($entity){
-
-    }
-
-    /**
-     * Takes an array of entities representing all rows in the CSV as the argument.
-     * Each entity passed to this method is actually an array object representing the fully resolved object where all validations have passed and foreign keys resolved.
-     * You can optionally override this method to do any processing that is required to be done across all rows which are being imported.
-     * To do pre-create activities on a per entity basis you can simply write the code when implemeting importCreate() method.
-     *
-     * Optional To Override
-     *
-     * @param array $entities
-     */
-    protected function beforeImport($entities)
-    {
-
-    }
-
-    /**
-     * Takes an array of entities representing all rows in the CSV as the argument. Each entity passed to this method is actually an instance of the entity class.
-     * You can optionally override this method to do any processing that is required to be done across all rows which are being imported.
-     * To do post-create activities on a per entity basis you can simply write the code when implemeting importCreate() method.
-     *
-     * Optional To Override
-     *
-     * @param array $entities
-     */
-    protected function afterImport($entities)
-    {
-
-    }
+    
 
     /**
      * Action method linked to the GET <entityname>/import route.
@@ -190,8 +111,6 @@ trait ImportOperation
     {
         // figure out the importable fields.
         $importFields = $this->getImportableFields();
-
-
 
         $headers = array(
             "Content-type" => "text/csv",
@@ -293,8 +212,10 @@ trait ImportOperation
             }
         }
 
-        // run validations.
+        // Run validations and create.
         $errors = [];
+        $entityObjects = [];
+        $this->beforeImport($entities);
         foreach ($entities as $idx => &$entity) {
             $rules = $this->importValidationRules();
             $messages = $this->importValidationMessages();
@@ -304,17 +225,11 @@ trait ImportOperation
                     'row_number' => $idx + 1,
                     'errors' => $validator->errors()->all()
                 ];
-            }
-        }
-
-        // create the user appointments.
-        $entityObjects = [];
-        $this->beforeImport($entities);
-        if (empty($errors)) {
-            foreach ($entities as $idx => &$entity) {
+            }else{
                 $entityObjects[] = $this->importCreate($entity);
             }
         }
+
         $this->afterImport($entityObjects);
 
         return view($this->importProcessView(), [
@@ -323,18 +238,19 @@ trait ImportOperation
         ]);
     }
 
-
     /**
-     * Override this method to provide an array of instructions. These instructions are then displayed in step 1
-     * as a numbered list. The first instruction is always the default instruction to download the sample csv.
+     *
+     * After all foreign keys have been resolved and validation rules have run successfully for all rows, this method
+     * is called with an array representing the entity which is to be created.
      *
      * Required To Override
      *
-     * @return array
+     * @param array $entity
+     * @return mixed You need to return the created entity object, generally you can return the result of calling the create method on the entity class.
      */
-    protected function importInstructions()
-    {
-        return [];
+    protected function importCreate($entity){
+        
+        return $this->crud->model->firstOrCreate($entity);
     }
 
     /**
@@ -365,6 +281,20 @@ trait ImportOperation
         }
 
         return $importFields;
+    }
+
+
+    /**
+     * Override this method to provide an array of instructions. These instructions are then displayed in step 1
+     * as a numbered list. The first instruction is always the default instruction to download the sample csv.
+     *
+     * Required To Override
+     *
+     * @return array
+     */
+    protected function importInstructions()
+    {
+        return [];
     }
 
 
@@ -416,6 +346,74 @@ trait ImportOperation
     protected function importProcessView()
     {
         return 'csv-import::import_process';
+    }
+
+    /**
+     *
+     * Override this method to provide an array of validation rules. The syntax to follow is the same as the syntax we
+     * use for defining Laravel validation rules.
+     * return [
+     *      'user_id' => 'required',
+     *      'package_id' => 'required',
+     *      'company_id' => 'required',
+     * ];
+     *
+     * Required To Override
+     *
+     * @return array
+     *
+     */
+    protected function importValidationRules()
+    {
+        return [];
+    }
+
+    /**
+     * Override this method to provide an array of validation rule failure messages. A sample return could be
+     *
+     * return [
+     *      'user_id.required' => 'Specifying a user is mandatory when creating an appointment, please check if you have specified a valid name, email, date of birth (yyyy-mm-dd format) & contact number of the user.',
+     *      'package_id.required' => 'Specifying a package name is mandatory when creating an appointment, please check if you have specified a valid package name.',
+     *      'company_id.required' => 'Specifying a company name is mandatory when creating an appointment, please check if you have specified a valid company name.',
+     * ];
+     *
+     * Required To Override
+     *
+     * @return array
+     */
+    protected function importValidationMessages()
+    {
+        return [];
+    }
+
+
+    /**
+     * Takes an array of entities representing all rows in the CSV as the argument.
+     * Each entity passed to this method is actually an array object representing the fully resolved object where all validations have passed and foreign keys resolved.
+     * You can optionally override this method to do any processing that is required to be done across all rows which are being imported.
+     * To do pre-create activities on a per entity basis you can simply write the code when implemeting importCreate() method.
+     *
+     * Optional To Override
+     *
+     * @param array $entities
+     */
+    protected function beforeImport($entities)
+    {
+
+    }
+
+    /**
+     * Takes an array of entities representing all rows in the CSV as the argument. Each entity passed to this method is actually an instance of the entity class.
+     * You can optionally override this method to do any processing that is required to be done across all rows which are being imported.
+     * To do post-create activities on a per entity basis you can simply write the code when implemeting importCreate() method.
+     *
+     * Optional To Override
+     *
+     * @param array $entities
+     */
+    protected function afterImport($entities)
+    {
+
     }
 
 }
