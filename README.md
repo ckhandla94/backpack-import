@@ -42,3 +42,9 @@ class ExampleCrudController extends CrudController
     ....
 
 ```
+
+## Preview
+
+![Screenshot-3](screenshot-1.png)
+![Screenshot-1](screenshot-3.png)
+![Screenshot-3](screenshot-3.png)
