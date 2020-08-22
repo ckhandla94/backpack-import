@@ -2,9 +2,9 @@
 
 ## Install
 
-0) This package assumes you've already installed [Backpack for Laravel](https://backpackforlaravel.com). If you haven't, please [install Backpack first](https://backpackforlaravel.com/docs/3.5/installation).
+1) This package assumes you've already installed [Backpack for Laravel](https://backpackforlaravel.com). If you haven't, please [install Backpack first](https://backpackforlaravel.com/docs/3.5/installation).
 
-1) In your terminal:
+2) In your terminal:
 
 ``` bash
 composer require ckhandla94/backpack-import
