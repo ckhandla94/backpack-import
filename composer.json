@@ -1,0 +1,24 @@
+{
+    "name": "ckhandla94/backpack-import",
+    "type": "library",
+    "license": "MIT",
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "authors": [{
+        "name": "Chetan Khandla",
+        "email": "ckhandla94@gmail.com"
+    }],
+    "require": {},
+    "autoload": {
+        "psr-4": {
+            "BackpackImport\\": "src/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+            	"BackpackImport\\BackpackImportServiceProvider"
+            ]
+        }
+    }
+}
