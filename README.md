@@ -44,7 +44,11 @@ class ExampleCrudController extends CrudController
 ```
 
 ## Preview
-
+### Import button in List page
 ![Screenshot-3](screenshot-1.png)
-![Screenshot-1](screenshot-3.png)
+
+### Import page or Download sample file
+![Screenshot-1](screenshot-2.png)
+
+### Preview of the uploaded file and Maping with database
 ![Screenshot-3](screenshot-3.png)
