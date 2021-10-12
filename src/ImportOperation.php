@@ -147,7 +147,9 @@ trait ImportOperation
     public function importParse(Request $request)
     {
         $path = $request->file('csv_file')->getRealPath();
-        $data = CsvReader::FromFile($path);
+        $csv  = CsvReader::FromFile($path);
+        $data = $csv->getRows();
+
         $encodings = [
             'CP1251',
             'UCS-2LE',
