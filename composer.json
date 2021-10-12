@@ -8,7 +8,9 @@
         "name": "Chetan Khandla",
         "email": "ckhandla94@gmail.com"
     }],
-    "require": {},
+    "require": {
+        "atk14/csv-reader": "^1.1"
+    },
     "autoload": {
         "psr-4": {
             "BackpackImport\\": "src/"
