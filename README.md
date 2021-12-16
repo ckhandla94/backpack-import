@@ -12,7 +12,6 @@ composer require ckhandla94/backpack-import
 
 2) Run its migrations. Publish its config files. Most likely it's:
 ```bash
-php artisan vendor:publish --provider="BackpackImport\BackpackImportServiceProvider"
 php artisan migrate
 ```
 
