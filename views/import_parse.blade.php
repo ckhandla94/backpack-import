@@ -13,7 +13,7 @@
 @section('content')
 
     <div class="row mt-4">
-        <div class="card">
+        <div class="card" style="overflow: scroll;">
             <div class="card-body">
                 <form class="form-horizontal" method="POST" action="{{ url($crud->route.'/import-process') }}">
                     {{ csrf_field() }}
@@ -28,7 +28,7 @@
                              <tr>
                                 @foreach ($csv_data[0] as $key => $value)
                                     <td>
-                                        <select name="fields[{{ $key }}]" class="form-control select2">
+                                        <select name="fields[{{ $key }}]" class="form-control select2" style="width: max-content;">
                                             <option value="">Select mapping</option>
                                             @foreach ($import_fields as $key => $import_field)
                                                 <option
